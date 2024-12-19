@@ -158,11 +158,9 @@ namespace CRUDExample.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PersonsCSV()
         {
-           
             MemoryStream memoryStream = await _personsService.GetPersonsCSV();
             return File(memoryStream, "application/octet-stream","Persons.CSV");
-          
-           
+
         }
 
         [HttpGet]
