@@ -13,7 +13,7 @@ namespace CRUDS_Operations
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IPersonService, PersonService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
-            builder.Services.AddDbContext<PersonsDbContext>(options =>
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefalutConnection"));
             });

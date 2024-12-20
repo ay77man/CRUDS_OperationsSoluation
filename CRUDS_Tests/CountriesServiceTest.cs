@@ -4,18 +4,31 @@ using ServiceContracts.DTO;
 using Entities;
 using Services;
 using Microsoft.EntityFrameworkCore;
-
+using EntityFrameworkCoreMock;
+using AutoFixture;
+using FluentAssertions;
 
 namespace CRUDS_Tests
 {
     public class CountriesServiceTest
     {
         private readonly ICountriesService _countriesService;
+        private readonly IFixture fixture;
 
         // Constructor
         public CountriesServiceTest()
         {
-            _countriesService = new CountriesService(new PersonsDbContext(new DbContextOptionsBuilder<PersonsDbContext>().Options));
+            // initial Data Source
+            List<Country> countries = new List<Country>();
+            // Create option bulider
+            var ApplicationDbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().Options;
+            // Create Mock DbContext
+            DbContextMock<ApplicationDbContext> _dbContextMock = new DbContextMock<ApplicationDbContext>(ApplicationDbContextOptions);
+            // Create Mock DbSet 
+            _dbContextMock.CreateDbSetMock<Country>(temp => temp.Countries,countries);
+            // give mock DbContext to Service 
+            _countriesService = new CountriesService(_dbContextMock.Object);
+            fixture = new Fixture();
         }
 
         #region AddCountry
@@ -25,55 +38,69 @@ namespace CRUDS_Tests
         {
             // Arrange
             CountryAddRequest? request = null;
-            //Assert
-            await Assert.ThrowsAsync<ArgumentNullException>( async()=>
+
+
+            // Act 
+            var action = async () =>
             {
-                // Act 
                 await _countriesService.AddCountry(request);
-            });
+            };
+
+            // Assert
+            await action.Should().ThrowAsync<ArgumentNullException>();
+
         }
         //When the CountryName is null, it should throw ArgumentException
         [Fact]
         public async Task AddCountry_NullCountryName()
         {
             // Arrange
-            CountryAddRequest? request = new CountryAddRequest { CountryName = null};
-            //Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            CountryAddRequest? request = fixture.Build<CountryAddRequest>()
+                .With(temp=>temp.CountryName , null as string)
+            .Create();
+         
+            // Act 
+            var action = (async () =>
             {
-                // Act 
                await _countriesService.AddCountry(request);
             });
+            //Assert
+            await action.Should().ThrowAsync<ArgumentException>();
         }
         //When the CountryName is duplicate, it should throw ArgumentException
         [Fact]
         public async Task AddCountry_DuplicateCountryName()
         {
             // Arrange
-            CountryAddRequest? request1 = new CountryAddRequest { CountryName = "USA"};
-            CountryAddRequest? request2 = new CountryAddRequest { CountryName = "USA"};
-            //Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            CountryAddRequest? request1 = fixture.Create<CountryAddRequest>();
+            CountryAddRequest? request2 = fixture.Build<CountryAddRequest>()
+                .With(temp => temp.CountryName, request1.CountryName)
+                .Create();         
+           var action = (async () =>
             {
                 // Act 
                await _countriesService.AddCountry(request1);
                await _countriesService.AddCountry(request2);
             });
+            //Assert
+            await action.Should().ThrowAsync<ArgumentException>();
         }
         //When you supply proper country name, it should insert (add) the country to the existing list of countries
         [Fact]
         public async Task AddCountry_ProperCountry()
         {
             // Arrange
-            CountryAddRequest? request = new CountryAddRequest { CountryName = "Egypt"};
+            CountryAddRequest? request = fixture.Create<CountryAddRequest>();
             
             // Act 
             CountryResponse countryResponse = await _countriesService.AddCountry(request);
             List<CountryResponse> AllCountries = await _countriesService.GetAllCountries();
 
             // Assert
-            Assert.True(countryResponse.CountryId != Guid.Empty);
-            Assert.Contains(countryResponse, AllCountries);
+            countryResponse.CountryId.Should().NotBe(Guid.Empty);
+            AllCountries.Should().Contain(countryResponse);
+            //Assert.True(countryResponse.CountryId != Guid.Empty);
+            //Assert.Contains(countryResponse, AllCountries);
         }
         #endregion
 
@@ -85,7 +112,8 @@ namespace CRUDS_Tests
              // Act 
              List<CountryResponse> acutal_country_response_list = await _countriesService.GetAllCountries();
              // Assert
-            Assert.Empty(acutal_country_response_list);
+             acutal_country_response_list.Should().BeEmpty();
+            // Assert.Empty(acutal_country_response_list);
         }
         [Fact]
         public async Task GetAllCountries_AddFewCountries()
@@ -93,8 +121,8 @@ namespace CRUDS_Tests
             // Arrange
             List<CountryAddRequest> countryAdds = new List<CountryAddRequest>
             {
-                new CountryAddRequest { CountryName = "UK" },
-                new CountryAddRequest { CountryName = "Qatar" }
+                fixture.Create<CountryAddRequest>(),
+                fixture.Create<CountryAddRequest>(),
             };
             //Act
               // this is Expected Data
@@ -107,10 +135,11 @@ namespace CRUDS_Tests
               // Acutal Data
             List<CountryResponse> Country_Response_From_GetAllCoutries = await _countriesService.GetAllCountries();
             // Assert
-            foreach(CountryResponse Expected in Country_Response_From_Add_Request)
-            {
-                Assert.Contains(Expected, Country_Response_From_GetAllCoutries);
-            }
+            Country_Response_From_GetAllCoutries.Should().BeEquivalentTo(Country_Response_From_Add_Request);
+            //foreach(CountryResponse Expected in Country_Response_From_Add_Request)
+            //{
+            //    Assert.Contains(Expected, Country_Response_From_GetAllCoutries);
+            //}
         }
         #endregion
 
@@ -124,7 +153,8 @@ namespace CRUDS_Tests
             // Act 
             CountryResponse? countryResponse = await _countriesService.GetCountryByCountryId(CountryId);
             //Assert
-            Assert.Null(countryResponse);   
+            countryResponse.Should().BeNull();
+           // Assert.Null(countryResponse);   
 
         }
        
@@ -133,12 +163,13 @@ namespace CRUDS_Tests
         public async Task GetCountryById_ProperCountryId()
         {
             // Arrange
-            CountryAddRequest countryAddRequest = new CountryAddRequest { CountryName = "Irland" };
+            CountryAddRequest countryAddRequest = fixture.Create<CountryAddRequest>();  
             CountryResponse ExpectedResponse = await _countriesService.AddCountry(countryAddRequest);
             // Act 
             CountryResponse? ActualResonse = await _countriesService.GetCountryByCountryId(ExpectedResponse.CountryId);
             //Assert
-            Assert.Equal(ExpectedResponse, ActualResonse);
+            ActualResonse.Should().Be(ExpectedResponse);
+           // Assert.Equal(ExpectedResponse, ActualResonse);
 
         }
         #endregion
