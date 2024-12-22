@@ -35,8 +35,8 @@ namespace CRUDS_Tests
             _dbContextMock.CreateDbSetMock<Country>(temp => temp.Countries, countries);
             _dbContextMock.CreateDbSetMock<Person>(temp => temp.Persons, persons);
             // give mock DbContext to Service 
-            _countriesService = new CountriesService(_dbContextMock.Object);
-            _personService = new PersonService(_dbContextMock.Object, _countriesService);
+            _countriesService = new CountriesService(null);
+            _personService = new PersonService(null);
 
             _outputHelper =  testOutputHelper;
 

@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repository;
+using RepositoryContracts;
 using ServiceContracts;
 using Services;
 
@@ -11,6 +13,8 @@ namespace CRUDS_Operations
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICountriesRepository,CountriesRepository>();
+            builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
             builder.Services.AddScoped<IPersonService, PersonService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

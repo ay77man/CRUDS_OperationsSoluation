@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUDS_Operations", "CRUDS_Operations\CRUDS_Operations.csproj", "{96F0850B-52D2-4726-B8CA-AE9BB0D820E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUDS_Operations", "CRUDS_Operations\CRUDS_Operations.csproj", "{96F0850B-52D2-4726-B8CA-AE9BB0D820E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUDS_Tests", "CRUDS_Tests\CRUDS_Tests.csproj", "{5EDFC68A-47A3-4093-A5B3-E1A22E38B472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUDS_Tests", "CRUDS_Tests\CRUDS_Tests.csproj", "{5EDFC68A-47A3-4093-A5B3-E1A22E38B472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{26258591-CF33-4496-A0BB-CA7898BFD135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{26258591-CF33-4496-A0BB-CA7898BFD135}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{A4363056-723C-4E49-A5D4-3C436B063D09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{A4363056-723C-4E49-A5D4-3C436B063D09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{882F1432-3347-46CE-B463-CCD65603AABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{882F1432-3347-46CE-B463-CCD65603AABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryContracts", "RepositoryContracts\RepositoryContracts.csproj", "{F4D6874F-5B52-4647-AB55-5E585EBBE99A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{4CA23430-48F0-4085-9E30-F661DCF85D90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{882F1432-3347-46CE-B463-CCD65603AABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{882F1432-3347-46CE-B463-CCD65603AABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{882F1432-3347-46CE-B463-CCD65603AABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4D6874F-5B52-4647-AB55-5E585EBBE99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4D6874F-5B52-4647-AB55-5E585EBBE99A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4D6874F-5B52-4647-AB55-5E585EBBE99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4D6874F-5B52-4647-AB55-5E585EBBE99A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CA23430-48F0-4085-9E30-F661DCF85D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CA23430-48F0-4085-9E30-F661DCF85D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CA23430-48F0-4085-9E30-F661DCF85D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CA23430-48F0-4085-9E30-F661DCF85D90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
