@@ -72,10 +72,10 @@ namespace CRUDExample.Controllers
                     .Select(t => new SelectListItem { Text = t.CountryName, Value = t.CountryId.ToString() });
 
                 ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View();
+                return View(personAddRequest);
             }
-            await _personsService.AddPerson(personAddRequest);
-            return RedirectToAction("index", "Persons");
+            PersonResponse personResponse = await _personsService.AddPerson(personAddRequest);
+            return RedirectToAction("Index", "Persons");
         }
 
         [HttpGet]
@@ -101,7 +101,7 @@ namespace CRUDExample.Controllers
             PersonResponse? persons_response = await _personsService.GetPersonByPersonId(personUpdateRequest.PersonID);
             if (persons_response == null)
             {
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
             if (!ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace CRUDExample.Controllers
             }
             PersonResponse personResponse = await _personsService.UpdatePerson(personUpdateRequest);
 
-            return RedirectToAction("index", "persons");
+            return RedirectToAction("Index", "persons");
         }
 
         [HttpGet]
