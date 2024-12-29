@@ -2,6 +2,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using RepositoryContracts;
+using Serilog;
 using ServiceContracts;
 using Services;
 
@@ -20,12 +21,17 @@ namespace CRUDS_Operations
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefalutConnection"));
-            });    
+            });
 
-            // Logging
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
-            builder.Logging.AddDebug();
+            // Logging Useing Serilog
+            builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+            {
+
+                loggerConfiguration
+                .ReadFrom.Configuration(context.Configuration) //read configuration settings from built-in IConfiguration
+                .ReadFrom.Services(services); //read out current app's services and make them available to serilog
+            });
+
 
             builder.Services.AddHttpLogging(options =>
             {
