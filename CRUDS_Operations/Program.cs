@@ -20,6 +20,17 @@ namespace CRUDS_Operations
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefalutConnection"));
+            });    
+
+            // Logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+
+            builder.Services.AddHttpLogging(options =>
+            {
+                options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties
+                | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseHeaders;
             });
 
             var app = builder.Build();
@@ -27,12 +38,16 @@ namespace CRUDS_Operations
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseHttpLogging(); // log the detail of http request and response in log provider 
+
             Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
             app.UseStaticFiles();
             app.UseRouting();
             app.MapControllers();
 
             app.Run();
-        }
+            
+    }
     }
 }

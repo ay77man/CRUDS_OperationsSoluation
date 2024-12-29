@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
 using ServiceContracts;
@@ -15,12 +16,12 @@ namespace Services
     public class PersonService : IPersonService
     {
         private readonly IPersonsRepository _personsRepository;
-
+        private readonly ILogger<PersonService> _logger;
         // Consturctor
-        public PersonService(IPersonsRepository personsRepository )
+        public PersonService(IPersonsRepository personsRepository,ILogger<PersonService> logger )
         {
             _personsRepository = personsRepository;
-            
+            _logger = logger;
         }
      
         public async Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest)
@@ -53,7 +54,10 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetAllPersons()
         {
-           var persons = await _personsRepository.GetAllPersons();
+            // Logging
+            _logger.LogInformation("GetAllPersons of PersonService ");
+
+            var persons = await _personsRepository.GetAllPersons();
              return persons.
                 Select(temp=>temp.ToPersonResponse()).ToList();
 
@@ -61,7 +65,8 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetFilterdPersons(string? searchBy, string? searchString)
         {
-
+            // Logging
+            _logger.LogInformation("GetFilterdPersons of PersonService ");
             List<Person> persons = searchBy switch
 
             {
@@ -79,7 +84,7 @@ namespace Services
 
                 nameof(Person.Gender) =>
                     await _personsRepository.GetFilteredPersons(
-                        temp => temp.Gender.Contains(searchString)),
+                        temp => temp.Gender.Equals(searchString)),
 
                 nameof(PersonResponse.DataOfBirth) =>
                   await _personsRepository.GetFilteredPersons(temp =>
@@ -173,7 +178,7 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetSortedPersons(List<PersonResponse> all_persons, string? SortBy, SortOrderOptions sortOrder)
         {
-           if(string.IsNullOrEmpty(SortBy))
+            if (string.IsNullOrEmpty(SortBy))
                 return  all_persons;
             List<PersonResponse> SortedPersons = (SortBy, sortOrder) switch
             {
